@@ -1,4 +1,4 @@
-package com.example.newsapiappfromazat.view_ui
+package com.example.newsapiappfromazat.view
 
 import android.os.Bundle
 import android.util.Log
@@ -37,17 +37,22 @@ class NewsFragment : Fragment() {
         recycler_view.layoutManager = layoutManager
         recycler_view.setHasFixedSize(true)
         recycler_view.isNestedScrollingEnabled = false
+        swipeRefreshLayout.isEnabled = false
+
         InternetCheck{internet ->
             if(!internet){
                 Toast.makeText(context,"Нет подключения к интернету!",Toast.LENGTH_SHORT).show()
-                swipeRefreshLayout.isClickable = false
+                if(swipeRefreshLayout.isRefreshing){
+                    swipeRefreshLayout.isRefreshing = false
+                }
             }else{
                 loadMore()
+                swipeRefreshLayout.isEnabled = true
                 swipeRefreshLayout.setOnRefreshListener {
                     swipeRefreshLayout.isRefreshing = true
                     listSize = 10
                     loadMore()
-        1        }
+                }
                 recycler_view.setOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         if (!isLoading) {
@@ -55,11 +60,9 @@ class NewsFragment : Fragment() {
                             val visibleItemCount = layoutManager!!.childCount
                             val pastVisibleItem = layoutManager!!.findFirstCompletelyVisibleItemPosition()
                             val total = recycler_view.adapter!!.itemCount
-
-                            Log.i("aaaaaaaaaaa",layoutManager?.findLastCompletelyVisibleItemPosition().toString())
-
+                            
                             if ((visibleItemCount+pastVisibleItem)>=total) {
-                                if (listSize!=70){
+                                if (listSize<71){
                                     listSize += 10
                                     loadMore()
                                 }
@@ -76,7 +79,6 @@ class NewsFragment : Fragment() {
             recycler_view.adapter?.notifyDataSetChanged()
             swipeRefreshLayout.isRefreshing = false
         })
-
 
     }
 

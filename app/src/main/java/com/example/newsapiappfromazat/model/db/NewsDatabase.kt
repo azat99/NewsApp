@@ -8,13 +8,11 @@ import com.example.newsapiappfromazat.model.entity.*
     entities = [
         Article::class
     ],
-    version = 1
+    version = 8
 )
-@TypeConverters(Converters::class)
 abstract class NewsDatabase : RoomDatabase() {
 
     abstract fun getArtileDao(): ArticleDAO
-    abstract fun getSourceDao(): SourceDAO
 
     companion object {
 

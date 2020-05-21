@@ -10,7 +10,7 @@ import androidx.room.Query
 interface ArticleDAO {
 
     @Query("select * from article")
-    fun getAllArticle():List<Article>
+    fun getAllArticle():LiveData<List<Article>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllArticle(articleList: List<Article>)

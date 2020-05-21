@@ -5,25 +5,22 @@ import androidx.lifecycle.LiveData
 import com.example.newsapiappfromazat.model.api.ApiService
 import com.example.newsapiappfromazat.model.entity.Article
 import com.example.newsapiappfromazat.model.entity.ArticleDAO
-import com.example.newsapiappfromazat.model.entity.Source
-import com.example.newsapiappfromazat.model.entity.SourceDAO
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class RepositoryImpl(
     private val articleDAO: ArticleDAO,
-    private val sourceDAO: SourceDAO,
     private val apiService: ApiService
 ) : Repository {
-    override fun putDataToArticle() {
+    override fun putDataToArticle(pageSize:Int) {
         val country = "us"
         val category = "business"
+        val pageSize = pageSize
         val apiKey = "ffde8df5ea4f4fa7b411542fe0187993"
         try {
             GlobalScope.launch {
-                val result = apiService.getNewsList(country, category, apiKey).await()
-                sourceDAO.deleteSource()
+                val result = apiService.getNewsList(country, category, pageSize, apiKey).await()
                 articleDAO.deleteArticle()
                 articleDAO.insertAllArticle(result.articles)
             }
@@ -32,11 +29,7 @@ class RepositoryImpl(
         }
     }
 
-    override fun getDataFromArticle(): List<Article> {
+    override fun getDataFromArticle(): LiveData<List<Article>> {
         return articleDAO.getAllArticle()
-    }
-
-    override fun getDataFromSource():List<Source> {
-       return sourceDAO.getAllSource()
     }
 }

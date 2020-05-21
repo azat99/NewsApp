@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-const val BASE_URL = "http://newsapi.org/v2/"
+const val BASE_URL = "https://newsapi.org/v2/"
 
 interface ApiService {
 
@@ -16,6 +16,7 @@ interface ApiService {
     fun getNewsList(
         @Query("country") country: String,
         @Query("category") category: String,
+        @Query("pageSize") pageSize: Int,
         @Query("apiKey") apiKey: String
     ): Deferred<NewsResponse>
 
